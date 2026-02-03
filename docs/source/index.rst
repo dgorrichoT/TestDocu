@@ -1,5 +1,5 @@
 Welcome to Documentation POC's documentation!
-==========================================
+=============================================
 
 .. toctree::
    :maxdepth: 2

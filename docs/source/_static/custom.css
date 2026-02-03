@@ -1,0 +1,56 @@
+/* docs/source/_static/custom.css */
+
+:root, body {
+    /* Layout dimensions */
+    --sidebar-width: 15rem; 
+    --content-width: 65rem;
+    
+    /* Global styling */
+    --admonition-border-radius: 8px;
+    --sidebar-item-spacing-horizontal: 0.5rem;
+
+    --color-sidebar-background: #C8FFF8;
+    --color-sidebar-item-background--hover: #A0E5DC;
+    --color-sidebar-item-background--current: #78CAC0;
+    
+    /* Typography stacks */
+    --font-stack: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-stack--monospace: "Fira Code", "JetBrains Mono", monospace;
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+    --color-sidebar-background: #003052;
+    --color-sidebar-item-background--hover: #004B7F;
+    --color-sidebar-item-background--current: #006BB8;
+}
+
+/* Sidebar width adjustment for big screens */
+@media (min-width: 67rem) {
+    .sidebar-drawer {
+        width: var(--sidebar-width);
+    }
+    .main {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+/* Rounded corners for code blocks */
+.highlight {
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+/* Thicker accent border for admonitions (notes, warnings, etc.) */
+.admonition {
+    border-left-width: 0.4rem !important;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.sidebar-brand-logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 150px;
+    padding: 1rem 0;
+}

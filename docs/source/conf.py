@@ -17,8 +17,19 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 # Configuración del tema
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 html_static_path = ['_static']
+
+html_css_files = [
+    'custom.css',
+]
+
+html_logo = "_static/logo.png"
+
+html_theme_options = {
+    "sidebar_hide_name": True,
+    "navigation_with_keys": True,
+}
 
 # Permitir archivos .md y .rst
 source_suffix = {
