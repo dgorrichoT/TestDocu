@@ -1,0 +1,12 @@
+[project]
+name = "documentation-poc"
+version = "0.1.0"
+description = "POC of the Documentation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "Sphinx>=7.0.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "myst-parser>=2.0.0", # For .md files
+    "sphinx-autobuild>=2024.0.0", # For local live-reload
+]
