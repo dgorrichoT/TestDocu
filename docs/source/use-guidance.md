@@ -1,3 +1,3 @@
 # Use-guidance
 
-This is the use-guidance page for the documentation.
+This is the demo page for the documentation.

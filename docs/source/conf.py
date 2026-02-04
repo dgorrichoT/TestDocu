@@ -9,7 +9,6 @@ author = 'David Gorricho'
 # Extensiones: MyST es para Markdown, rtd es el tema visual
 extensions = [
     'myst_parser',
-    'sphinx_rtd_theme',
     'sphinx.ext.autodoc',
 ]
 
