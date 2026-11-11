@@ -1,55 +1,67 @@
 name: Deploy Sphinx Docs
 
-# 1. Execution triggers
-
 on:
   push:
-    branches: ["main"]   # When pushing to main branch
-  workflow_dispatch:      # Manual trigger
+    tags:
+      - "furo-theme-showcase-*"
+      - "use-guidance-*"
 
-# 2. Needed permissions to depliy in GitHub pages
 permissions:
-  contents: read          
-  pages: write             
-  id-token: write          
+  contents: write
 
-# 3. Jobs definition
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository and tags
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
           version: "latest"
-          enable-cache: true  # Store libraries in cache
+          enable-cache: true
 
       - name: Set up Python
-        run: uv python install  # Install python version in uv
+        run: uv python install
 
       - name: Install dependencies
-        run: uv sync --frozen   # Instala uv libraries
+        run: uv sync --frozen
 
-      - name: Build documentation
-        # Generate HTML files 
-        run: uv run sphinx-build -b html docs/source docs/build/html
+      - name: Parse release tag
+        id: release
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if [[ "$RELEASE_TAG" =~ ^(furo-theme-showcase|use-guidance)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "section=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+            echo "version=${BASH_REMATCH[2]}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Tag must use section-X.Y.Z format: $RELEASE_TAG" >&2
+            exit 1
+          fi
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      - name: Build this release
+        env:
+          SECTION: ${{ steps.release.outputs.section }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: uv run sphinx-build -b html docs/source "_site/${SECTION}/${VERSION}"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Update version indexes
+        run: uv run python .github/scripts/generate_version_index.py --output-dir _site
+
+      - name: Deploy and preserve previous releases
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          # Specify HTML route
-          path: 'docs/build/html'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: _site/
+          keep_files: true
