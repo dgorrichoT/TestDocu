@@ -51,9 +51,9 @@ jobs:
 
       - name: Build this release
         env:
-          SECTION: ${{ steps.release.outputs.section }}
-          VERSION: ${{ steps.release.outputs.version }}
-        run: uv run sphinx-build -b html docs/source "_site/${SECTION}/${VERSION}"
+          DOCS_SECTION: ${{ steps.release.outputs.section }}
+          DOCS_VERSION: ${{ steps.release.outputs.version }}
+        run: uv run sphinx-build -b html docs/source "_site/${DOCS_SECTION}/${DOCS_VERSION}"
 
       - name: Update version indexes
         run: uv run python .github/scripts/generate_version_index.py --output-dir _site

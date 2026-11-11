@@ -1,0 +1,13 @@
+{% if docs_section and docs_version and docs_versions %}
+<div class="version-switcher">
+  <label for="docs-version">Versi3n</label>
+  <select id="docs-version" aria-label="Cambiar versi3n" onchange="if (this.value) window.location.href = this.value">
+    {% for version in docs_versions|reverse %}
+    {% set relative_root = '../' * (pagename.split('/')|length) %}
+    <option value="{{ relative_root }}{{ version }}/{{ pagename }}.html"{% if version == docs_version %} selected{% endif %}>
+      {{ version }}{% if version == docs_version %} (actual){% endif %}
+    </option>
+    {% endfor %}
+  </select>
+</div>
+{% endif %}
