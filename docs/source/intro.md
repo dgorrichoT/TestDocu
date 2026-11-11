@@ -38,3 +38,5 @@ def hello_furo(name: str) -> None:
 # Call the function
 hello_furo("Documentation")
 ```
+
+**Release note (1.1.0):** This test update demonstrates an independent minor release.
