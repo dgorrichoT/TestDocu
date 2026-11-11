@@ -5,6 +5,12 @@ on:
     tags:
       - "furo-theme-showcase-*"
       - "use-guidance-*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing documentation tag to build
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -21,6 +27,7 @@ jobs:
       - name: Checkout repository and tags
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref }}
           fetch-depth: 0
 
       - name: Install uv
@@ -30,16 +37,16 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.14
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --no-dev --python 3.14
 
       - name: Parse release tag
         id: release
         shell: bash
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
         run: |
           if [[ "$RELEASE_TAG" =~ ^(furo-theme-showcase|use-guidance)-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             echo "section=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
