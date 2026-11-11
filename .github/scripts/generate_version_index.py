@@ -6,8 +6,8 @@ from pathlib import Path
 
 RELEASE_PATTERN = re.compile(r"^(furo-theme-showcase|use-guidance)-(\d+\.\d+\.\d+)$")
 PAGE_BY_SECTION = {
-    "furo-theme-showcase": "intro.html#furo-theme-showcase",
-    "use-guidance": "use-guidance.html",
+    "furo-theme-showcase": "index.html",
+    "use-guidance": "index.html",
 }
 
 

@@ -82,3 +82,34 @@
     outline: 2px solid var(--color-brand-primary);
     outline-offset: 2px;
 }
+
+.section-switcher {
+    padding: 0.75rem 1rem;
+}
+
+.section-switcher p {
+    margin-bottom: 0.35rem;
+    color: var(--color-foreground-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.section-switcher ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.section-switcher li + li {
+    margin-top: 0.25rem;
+}
+
+.section-switcher a {
+    display: block;
+    padding: 0.35rem 0.5rem;
+    border-radius: 4px;
+}
+
+.section-switcher a:hover {
+    background: var(--color-sidebar-item-background--hover);
+}

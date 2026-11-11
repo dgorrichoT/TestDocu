@@ -1,0 +1,14 @@
+{% if latest_versions %}
+{% set relative_site_root = '../' * (pagename.split('/')|length + 1) %}
+<nav class="section-switcher" aria-label="Documentation sections">
+  <p>Sections</p>
+  <ul>
+    {% if latest_versions.get('furo-theme-showcase') %}
+    <li><a href="{{ relative_site_root }}furo-theme-showcase/{{ latest_versions['furo-theme-showcase'] }}/index.html">Furo Theme Showcase</a></li>
+    {% endif %}
+    {% if latest_versions.get('use-guidance') %}
+    <li><a href="{{ relative_site_root }}use-guidance/{{ latest_versions['use-guidance'] }}/index.html">Use Guidance</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}

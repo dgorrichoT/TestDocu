@@ -9,26 +9,41 @@ author = 'David Gorricho'
 
 docs_section = os.environ.get("DOCS_SECTION", "")
 docs_version = os.environ.get("DOCS_VERSION", "")
-docs_versions = []
+release_pattern = re.compile(r"^(furo-theme-showcase|use-guidance)-(\d+\.\d+\.\d+)$")
+release_tags = subprocess.run(
+    ["git", "tag", "--list"], check=True, capture_output=True, text=True
+).stdout.splitlines()
+versions_by_section = {"furo-theme-showcase": [], "use-guidance": []}
 
-if docs_section and docs_version:
-    tag_pattern = re.compile(rf"^{re.escape(docs_section)}-(\d+\.\d+\.\d+)$")
-    tags = subprocess.run(
-        ["git", "tag", "--list", f"{docs_section}-*"],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.splitlines()
-    docs_versions = sorted(
-        (match.group(1) for tag in tags if (match := tag_pattern.fullmatch(tag))),
-        key=lambda version: tuple(int(part) for part in version.split(".")),
-    )
+for tag in release_tags:
+    match = release_pattern.fullmatch(tag)
+    if match:
+        versions_by_section[match.group(1)].append(match.group(2))
+
+for versions in versions_by_section.values():
+    versions.sort(key=lambda version: tuple(int(part) for part in version.split(".")))
+
+docs_versions = versions_by_section.get(docs_section, [])
+latest_versions = {
+    section: versions[-1]
+    for section, versions in versions_by_section.items()
+    if versions
+}
 
 html_context = {
     "docs_section": docs_section,
     "docs_version": docs_version,
     "docs_versions": docs_versions,
+    "latest_versions": latest_versions,
 }
+
+if docs_section and docs_version:
+    if docs_version not in docs_versions:
+        raise ValueError(f"Tag {docs_section}-{docs_version} is not available in Git")
+
+templates_path = ["_templates"]
+html_static_path = ["_static"]
+html_logo = "_static/logo.png"
 
 # Extensiones: MyST es para Markdown, rtd es el tema visual
 extensions = [
@@ -36,18 +51,13 @@ extensions = [
     'sphinx.ext.autodoc',
 ]
 
-templates_path = ['_templates']
 exclude_patterns = []
 
 # Configuración del tema
 html_theme = 'furo'
-html_static_path = ['_static']
-
 html_css_files = [
     'custom.css',
 ]
-
-html_logo = "_static/logo.png"
 
 html_theme_options = {
     "sidebar_hide_name": True,
@@ -60,6 +70,7 @@ html_sidebars = {
         "sidebar/search.html",
         "sidebar/scroll-start.html",
         "sidebar/navigation.html",
+        "sidebar/sections.html",
         "sidebar/version-switcher.html",
         "sidebar/ethical-ads.html",
         "sidebar/scroll-end.html",
